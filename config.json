@@ -1,0 +1,18 @@
+{
+    "nama": "Dina Agustin",
+    "email": "agstn.dinaagustn@gmail.com",
+    "telepon": "0813-2870-6602",
+    "alamat": "Hargotirto, Kokap, Kulon Progo",
+    "keahlian": {
+        "teknis": [
+            "Microsoft Office (Word, Excel, PowerPoint)",
+            "Aplikasi Desain Grafis (Adobe Photoshop, Illustrator, CorelDRAW)",
+            "Penggunaan Komputer Dasar (Windows, troubleshooting ringan)"
+        ],
+        "non_teknis": [
+            "Komunikasi Efektif",
+            "Bahasa Inggris Dasar",
+            "Kerja Tim & Kolaborasi"
+        ]
+    }
+}
