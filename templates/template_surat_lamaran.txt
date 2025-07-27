@@ -1,0 +1,19 @@
+Yth. Bapak/Ibu [Nama Manajer Perekrutan],
+
+Dengan hormat,
+
+Melalui email ini, saya, {nama}, bermaksud untuk melamar posisi {posisi} yang saya temukan di {sumber_lowongan}.
+
+Saya memiliki pengalaman di bidang [bidang] dan memiliki keahlian dalam [keahlian]. Saya yakin bahwa kemampuan saya dapat memberikan kontribusi yang positif bagi perusahaan.
+
+Terlampir bersama email ini adalah CV saya untuk referensi Bapak/Ibu. Saya sangat antusias untuk dapat berdiskusi lebih lanjut mengenai bagaimana saya dapat menjadi aset berharga bagi tim Anda.
+
+Terima kasih atas waktu dan perhatian Anda.
+
+Hormat saya,
+
+{nama}
+{email}
+{telepon}
+{linkedin}
+{github}
