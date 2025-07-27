@@ -1,34 +1,69 @@
-import json
-import os
+import sqlite3
 from datetime import datetime
+import os
 
-HISTORY_FILE = "application_history.json"
+DB_FILE = "application_history.db"
+
+def init_db():
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS applications (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                company TEXT NOT NULL,
+                position TEXT NOT NULL,
+                file_path TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+    except sqlite3.Error as e:
+        print(f"Error initializing database: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+def save_application(company, position, file_path):
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        timestamp = datetime.now().isoformat()
+        cursor.execute('''
+            INSERT INTO applications (timestamp, company, position, file_path)
+            VALUES (?, ?, ?, ?)
+        ''', (timestamp, company, position, file_path))
+        conn.commit()
+        print(f"Riwayat lamaran disimpan ke DB: {company} - {position}")
+    except sqlite3.Error as e:
+        print(f"Error saving application to database: {e}")
+    finally:
+        if conn:
+            conn.close()
 
 def load_history():
-    if os.path.exists(HISTORY_FILE):
-        try:
-            with open(HISTORY_FILE, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print(f"Peringatan: File riwayat {HISTORY_FILE} rusak. Membuat yang baru.")
-            return []
-    return []
-
-def save_history(history):
+    conn = None
+    history = []
     try:
-        with open(HISTORY_FILE, 'w') as f:
-            json.dump(history, f, indent=4)
-    except Exception as e:
-        print(f"Error menyimpan riwayat: {e}")
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute('SELECT timestamp, company, position, file_path FROM applications ORDER BY timestamp DESC')
+        rows = cursor.fetchall()
+        for row in rows:
+            history.append({
+                "timestamp": row[0],
+                "company": row[1],
+                "position": row[2],
+                "file_path": row[3]
+            })
+    except sqlite3.Error as e:
+        print(f"Error loading history from database: {e}")
+    finally:
+        if conn:
+            conn.close()
+    return history
 
-def add_to_history(company, position, file_path):
-    history = load_history()
-    new_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "company": company,
-        "position": position,
-        "file_path": file_path
-    }
-    history.append(new_entry)
-    save_history(history)
-    print(f"Riwayat lamaran ditambahkan: {company} - {position}")
+# Panggil init_db saat modul diimpor
+init_db()
