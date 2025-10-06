@@ -1,0 +1,20 @@
+{
+    "nama": "Nama Anda",
+    "email": "emailanda@example.com",
+    "telepon": "Nomor Telepon Anda",
+    "alamat": "Alamat Anda",
+    "linkedin": "https://www.linkedin.com/in/usernameanda",
+    "github": "https://github.com/usernameanda",
+    "keahlian": {
+        "teknis": [
+            "Keahlian Teknis 1",
+            "Keahlian Teknis 2",
+            "Keahlian Teknis 3"
+        ],
+        "non_teknis": [
+            "Keahlian Non-Teknis 1",
+            "Keahlian Non-Teknis 2",
+            "Keahlian Non-Teknis 3"
+        ]
+    }
+}
