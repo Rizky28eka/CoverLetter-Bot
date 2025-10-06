@@ -1,23 +1,40 @@
-import google.generativeai as genai
-import os
 import json
+import os
+from typing import Any, Dict, Optional
+
+import google.generativeai as genai
 
 # Konfigurasi API Key Gemini dari environment variable
-api_key = os.getenv("GEMINI_API_KEY")
+api_key: Optional[str] = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    raise ValueError("GEMINI_API_KEY tidak ditemukan. Pastikan ada di file .env dan sudah diatur.")
+    raise ValueError(
+        "GEMINI_API_KEY tidak ditemukan. Pastikan ada di file .env dan sudah diatur."
+    )
 genai.configure(api_key=api_key)
 
-def generate_cover_letter(config, posisi, perusahaan, sumber_lowongan, cv_text=None, job_desc_text=None, writing_style="Formal"):
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    
-    keahlian_teknis = ", ".join(config['keahlian']['teknis'])
-    keahlian_non_teknis = ", ".join(config['keahlian']['non_teknis'])
 
-    cv_info = f"Berikut adalah ringkasan CV pelamar:\n{cv_text}\n" if cv_text else ""
-    job_info = f"Berikut adalah deskripsi pekerjaan yang dianalisis:\n{job_desc_text}\n" if job_desc_text else ""
+def generate_cover_letter(
+    config: Dict[str, Any],
+    posisi: str,
+    perusahaan: str,
+    sumber_lowongan: str,
+    cv_text: Optional[str] = None,
+    job_desc_text: Optional[str] = None,
+    writing_style: str = "Formal",
+) -> Dict[str, Any]:
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
-    prompt = f"""
+    keahlian_teknis: str = ", ".join(config["keahlian"]["teknis"])
+    keahlian_non_teknis: str = ", ".join(config["keahlian"]["non_teknis"])
+
+    cv_info: str = f"Berikut adalah ringkasan CV pelamar:\n{cv_text}\n" if cv_text else ""
+    job_info: str = (
+        f"Berikut adalah deskripsi pekerjaan yang dianalisis:\n{job_desc_text}\n"
+        if job_desc_text
+        else ""
+    )
+
+    prompt: str = f"""
     **Peran:** Anda adalah seorang asisten karier profesional yang bertugas untuk membuat surat lamaran kerja yang personal, relevan, dan persuasif.
 
     **Tugas:** Buatkan sebuah surat lamaran kerja yang ditujukan kepada pimpinan HRD di perusahaan **{perusahaan}** untuk posisi **{posisi}**. Lowongan ini ditemukan melalui **{sumber_lowongan}**. Selain surat lamaran, berikan juga skor kecocokan numerik (dari 1 hingga 100) antara profil pelamar dengan deskripsi pekerjaan.
@@ -52,20 +69,26 @@ def generate_cover_letter(config, posisi, perusahaan, sumber_lowongan, cv_text=N
     """
     try:
         response = model.generate_content(prompt)
-        response_text = response.text.strip()
+        response_text: str = response.text.strip()
         if response_text.startswith("```json") and response_text.endswith("```"):
             response_text = response_text[7:-3].strip()
-        
-        parsed_response = json.loads(response_text)
+
+        parsed_response: Dict[str, Any] = json.loads(response_text)
         return parsed_response
     except Exception as e:
         print(f"Error saat memanggil Gemini API atau parsing respons: {e}")
-        return {"cover_letter": "Gagal membuat surat lamaran. Silakan coba lagi.", "match_score": 0}
+        return {
+            "cover_letter": "Gagal membuat surat lamaran. Silakan coba lagi.",
+            "match_score": 0,
+        }
 
-def generate_cv_suggestions(cv_text, job_desc_text, config):
-    model = genai.GenerativeModel('gemini-1.5-flash')
 
-    prompt = f"""
+def generate_cv_suggestions(
+    cv_text: str, job_desc_text: str, config: Dict[str, Any]
+) -> str:
+    model = genai.GenerativeModel("gemini-1.5-flash")
+
+    prompt: str = f"""
     **Peran:** Anda adalah seorang konsultan karier yang ahli dalam mengoptimalkan CV.
 
     **Tugas:** Analisis CV berikut dan deskripsi pekerjaan yang diberikan. Berikan saran konkret dan actionable (poin-poin) tentang bagaimana CV pelamar dapat diperbaiki atau disesuaikan agar lebih menonjol dan relevan untuk posisi yang dilamar. Fokus pada penyesuaian kata kunci, penyorotan pengalaman relevan, dan penambahan detail yang mungkin terlewat.
@@ -91,12 +114,13 @@ def generate_cv_suggestions(cv_text, job_desc_text, config):
         print(f"Error saat memanggil Gemini API untuk saran CV: {e}")
         return "Gagal mendapatkan saran perbaikan CV."
 
-def generate_thank_you_email(config, posisi, perusahaan, tanggal_wawancara=None):
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    
-    tanggal_str = f"pada tanggal {tanggal_wawancara}" if tanggal_wawancara else ""
 
-    prompt = f"""
+def generate_thank_you_email(
+    config: Dict[str, Any], posisi: str, perusahaan: str, tanggal_wawancara: Optional[str] = None
+) -> str:
+    model = genai.GenerativeModel("gemini-1.5-flash")
+
+    prompt: str = f"""
     **Peran:** Anda adalah seorang asisten karier yang membantu membuat email profesional.
 
     **Tugas:** Buatkan email ucapan terima kasih setelah wawancara untuk posisi {posisi} di perusahaan {perusahaan}.
@@ -121,12 +145,13 @@ def generate_thank_you_email(config, posisi, perusahaan, tanggal_wawancara=None)
         print(f"Error saat memanggil Gemini API untuk email terima kasih: {e}")
         return "Gagal membuat email ucapan terima kasih."
 
-def generate_follow_up_email(config, posisi, perusahaan, tanggal_lamar=None):
-    model = genai.GenerativeModel('gemini-1.5-flash')
 
-    tanggal_str = f"pada tanggal {tanggal_lamar}" if tanggal_lamar else ""
+def generate_follow_up_email(
+    config: Dict[str, Any], posisi: str, perusahaan: str, tanggal_lamar: Optional[str] = None
+) -> str:
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
-    prompt = f"""
+    prompt: str = f"""
     **Peran:** Anda adalah seorang asisten karier yang membantu membuat email profesional.
 
     **Tugas:** Buatkan email tindak lanjut (follow-up) untuk menanyakan status lamaran kerja untuk posisi {posisi} di perusahaan {perusahaan}.
@@ -138,7 +163,7 @@ def generate_follow_up_email(config, posisi, perusahaan, tanggal_lamar=None):
 
     **Instruksi Tambahan:**
     * Tulis dengan nada sopan dan profesional.
-    * Ingatkan tentang lamaran yang diajukan {tanggal_str}.
+    * Ingatkan tentang lamaran yang diajukan.
     * Tanyakan dengan hormat mengenai status lamaran.
     * Tegaskan kembali minat pada posisi.
     * Format output adalah teks email lengkap.
