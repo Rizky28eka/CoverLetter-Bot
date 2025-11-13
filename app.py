@@ -1,10 +1,14 @@
+from dotenv import load_dotenv
+
+# Muat variabel dari file .env
+load_dotenv()
+
 import json
 import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import streamlit as st
-from dotenv import load_dotenv
 
 from src.ai_service import (
     generate_cover_letter,
@@ -16,9 +20,6 @@ from src.cv_parser import extract_text_from_pdf
 from src.email_sender import send_email_with_attachments
 from src.history_manager import init_db, load_history, save_application
 from src.job_parser import scrape_job_description
-
-# Muat variabel dari file .env
-load_dotenv()
 
 
 def main_gui() -> None:

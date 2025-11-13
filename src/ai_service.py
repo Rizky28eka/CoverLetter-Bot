@@ -8,7 +8,15 @@ import google.generativeai as genai
 api_key: Optional[str] = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError(
-        "GEMINI_API_KEY tidak ditemukan. Pastikan ada di file .env dan sudah diatur."
+        "GEMINI_API_KEY tidak ditemukan. "
+        "Untuk menjalankan aplikasi, Anda memerlukan API Key dari Google AI Studio.\n\n"
+        "Langkah-langkah untuk mengatur API Key:\n"
+        "1. Dapatkan API Key Anda dari Google AI Studio: https://aistudio.google.com/app/apikey\n"
+        "2. Buat file baru bernama `.env` di direktori utama proyek ini.\n"
+        "3. Tambahkan baris berikut ke dalam file `.env`:\n\n"
+        '   GEMINI_API_KEY="GANTI_DENGAN_API_KEY_ANDA"\n\n'
+        "4. Ganti `GANTI_DENGAN_API_KEY_ANDA` dengan API Key yang Anda dapatkan.\n"
+        "5. Simpan file `.env` dan jalankan kembali aplikasi."
     )
 genai.configure(api_key=api_key)
 
