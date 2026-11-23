@@ -17,3 +17,7 @@ application_history.db
 .idea/
 .vscode/
 .DS_Store
+# Personal data: copy config.json.example to config.json locally
+config.json
+*.pdf
+.DS_Store
